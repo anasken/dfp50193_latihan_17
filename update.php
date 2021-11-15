@@ -7,9 +7,9 @@ $name = $matric_no = $ic_no = "";
 $name_err = $matric_no_err = $ic_no_err = "";
  
 // Processing form data when form is submitted
-if(isset($_POST["id"]) && !empty($_POST["id"])){
+if(isset($_POST["idStudents"]) && !empty($_POST["idStudents"])){
     // Get hidden input value
-    $id = $_POST["id"];
+    $idStudents = $_POST["idStudents"];
     
     // Validate name
     $input_name = trim($_POST["name"]);
@@ -42,7 +42,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     // Check input errors before inserting in database
     if(empty($name_err) && empty($matric_no_err) && empty($ic_no_err)){
         // Prepare an update statement
-        $sql = "UPDATE student_info SET name=?, matric_no=?, ic_no=? WHERE id=?";
+        $sql = "UPDATE student_info SET name=?, matric_no=?, ic_no=? WHERE idStudents=?";
          
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
@@ -52,7 +52,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
             $param_name = $name;
             $param_matric_no = $matric_no;
             $param_ic_no = $ic_no;
-            $param_id = $id;
+            $param_id = $idStudents;
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
@@ -71,19 +71,19 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     // Close connection
     mysqli_close($link);
 } else{
-    // Check existence of id parameter before processing further
-    if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
+    // Check existence of idStudents parameter before processing further
+    if(isset($_GET["idStudents"]) && !empty(trim($_GET["idStudents"]))){
         // Get URL parameter
-        $id =  trim($_GET["id"]);
+        $idStudents =  trim($_GET["idStudents"]);
         
         // Prepare a select statement
-        $sql = "SELECT * FROM student_info WHERE id = ?";
+        $sql = "SELECT * FROM student_info WHERE idStudents = ?";
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "i", $param_id);
             
             // Set parameters
-            $param_id = $id;
+            $param_id = $idStudents;
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
@@ -99,7 +99,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                     $matric_no = $row["matric_no"];
                     $ic_no = $row["ic_no"];
                 } else{
-                    // URL doesn't contain valid id. Redirect to error page
+                    // URL doesn't contain valid idStudents. Redirect to error page
                     header("location: error.php");
                     exit();
                 }
@@ -115,7 +115,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
         // Close connection
         mysqli_close($link);
     }  else{
-        // URL doesn't contain id parameter. Redirect to error page
+        // URL doesn't contain idStudents parameter. Redirect to error page
         header("location: error.php");
         exit();
     }
@@ -158,7 +158,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                             <input type="text" name="ic_no" class="form-control <?php echo (!empty($ic_no_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $ic_no; ?>">
                             <span class="invalid-feedback"><?php echo $ic_no_err;?></span>
                         </div>
-                        <input type="hidden" name="id" value="<?php echo $id; ?>"/>
+                        <input type="hidden" name="idStudents" value="<?php echo $idStudents; ?>"/>
                         <input type="submit" class="btn btn-primary" value="Submit">
                         <a href="index.php" class="btn btn-secondary ml-2">Cancel</a>
                     </form>
